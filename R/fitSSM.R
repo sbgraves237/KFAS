@@ -1,8 +1,8 @@
-#' Maximum Likelihood Estimation of a State Space Model
+#' Maximum Likelihood Estimation of a State Space Model of Class fitSSM 
 #'
 #' Function \code{fitSSM} finds the maximum likelihood estimates for unknown
 #' parameters of an arbitary state space model, given the user-defined model
-#' updating function.
+#' updating function, exporting an object of class \code{fitSSM}.
 #'
 #' Note that \code{fitSSM} actually minimizes \code{-logLik(model)}, so for
 #' example the Hessian matrix returned by \code{hessian = TRUE} has an opposite
@@ -43,6 +43,8 @@
 #'
 #' @export
 #' @importFrom stats optim
+#' @rdname fitSSM
+#' @name fitSSM
 #' @param inits Initial values for \code{\link{optim}}.
 #' @param model Model object of class \code{SSModel}.
 #' @param updatefn User defined function which updates the model given the
@@ -57,7 +59,7 @@
 #' @param ... Further arguments for functions \code{optim} and
 #'  \code{logLik.SSModel}, such as \code{nsim = 1000}, \code{marginal = TRUE}, 
 #'   and \code{method = "BFGS"}.
-#'@return A list with elements
+#'@return Object of class \code{fitSSM}, which is a list with elements
 #'\item{optim.out}{Output from function \code{optim}. }
 #'\item{model}{Model with estimated parameters. }
 #'@seealso \code{\link{logLik}}, \code{\link{KFAS}}, 
@@ -256,5 +258,6 @@ fitSSM <- function(model, inits, updatefn, checkfn, update_args = NULL, ...) {
   out$model <- do.call(updatefn, args = c(list(out$optim.out$par, model), update_args))
   # check that the obtained model is of proper form
   is.SSModel(out$model, na.check = TRUE, return.logical = FALSE)
+  class(out) <- 'fitSSM'
   out
 }
