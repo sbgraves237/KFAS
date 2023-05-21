@@ -109,21 +109,70 @@ is.SSModel <- function(object, na.check = FALSE, return.logical = TRUE) {
                   "Possible choices are 'gaussian', 'poisson', 'binomial', ",
                   "'gamma' and ,'negative binomial'."))
     }
+#   Break the following down into several messages, 
+#   to give a more informative error message:    
+#    if (!(identical(dim(object$y), c(n, p)) &&
+#          identical(dim(object$Z), c(p, m, (n - 1L) * tv[1] + 1L)) &&
+#          (identical(object$H, "Omitted") ||
+#           identical(dim(object$H), c(p, p, (n - 1L) * tv[2] + 1L))) &&
+#          identical(dim(object$T), c(m, m, (n - 1L) * tv[3] + 1L)) &&
+#          identical(dim(object$R), c(m, k, (n - 1L) * tv[4] + 1L)) &&
+#          identical(dim(object$Q), c(k, k, (n - 1L) * tv[5] + 1L)) &&
+#          identical(dim(object$a1), c(m, 1L)) &&
+#          identical(dim(object$P1), c(m, m)) &&
+#          identical(dim(object$P1inf), c(m, m)) &&
+#          (identical(object$u, "Omitted") || identical(dim(object$u),
+#                                                       dim(object$y))))) {
+#      stop(paste0("Model is not a proper object of class 'SSModel'. ",
+#                  "Check dimensions of system matrices."))
+#    }
 
-    if (!(identical(dim(object$y), c(n, p)) &&
-          identical(dim(object$Z), c(p, m, (n - 1L) * tv[1] + 1L)) &&
-          (identical(object$H, "Omitted") ||
-           identical(dim(object$H), c(p, p, (n - 1L) * tv[2] + 1L))) &&
-          identical(dim(object$T), c(m, m, (n - 1L) * tv[3] + 1L)) &&
-          identical(dim(object$R), c(m, k, (n - 1L) * tv[4] + 1L)) &&
-          identical(dim(object$Q), c(k, k, (n - 1L) * tv[5] + 1L)) &&
-          identical(dim(object$a1), c(m, 1L)) &&
-          identical(dim(object$P1), c(m, m)) &&
-          identical(dim(object$P1inf), c(m, m)) &&
-          (identical(object$u, "Omitted") || identical(dim(object$u),
-                                                       dim(object$y))))) {
-      stop(paste0("Model is not a proper object of class 'SSModel'. ",
-                  "Check dimensions of system matrices."))
+    if (!identical(dim(object$y), c(n, p))){
+      stop('dim(y) should be c(', n, ',', p, '); is ', 
+           dim(object$y))
+    }
+    dimZ <- c(p, m, (n - 1L) * tv[1] + 1L) 
+    if(!identical(dim(object$Z), dimZ)){
+      stop('dim(Z) should be ', dimZ, '; is ', dim(object$Z))
+    }
+    dimH <- c(p, p, (n - 1L) * tv[2] + 1L) 
+    if(!(identical(object$H, "Omitted") ||
+          identical(dim(object$H), dimH))){
+      stop('H should be either Omitted or have dim(H) = ', 
+           dimH, '; dim(H) = ', dim(object$H))
+    } 
+    dimT <- c(m, m, (n - 1L) * tv[3] + 1L)
+    if(!identical(dim(object$T), dimT)){
+      stop('dim(T) should be ', dimT, '; is ', 
+           dim(object$T))
+    }
+    dimR <- c(m, k, (n - 1L) * tv[4] + 1L)
+    if(!identical(dim(object$R), dimR)){
+      stop('dim(R) should be ', dimR, '; is ', 
+           dim(object$R))
+    }
+    dimQ <- c(k, k, (n - 1L) * tv[5] + 1L)
+    if(!identical(dim(object$Q), dimQ)){
+      stop('dim(Q) should be ', dimQ, '; is ', 
+           dim(object$Q))
+    }
+    if(!identical(dim(object$a1), c(m, 1L))){
+      stop('dim(a1) should be c(', m, ', 1L); is ', 
+           dim(object$a1))
+    }
+    if(!identical(dim(object$P1), c(m, m))){
+      stop('dim(P1) should be c(', m, ',', m, '); is ', 
+           dim(object$P1))
+    } 
+    if(!identical(dim(object$P1inf), c(m, m))){
+      stop('dim(P1inf) should be c(', m, ',', m, '); is ', 
+           dim(object$P1inf))
+    }
+    if(!(identical(object$u, "Omitted") || 
+         identical(dim(object$u), dim(object$y)))){
+      stop('u should be either Omitted or have dim(u) = dim(y).',
+           ' Instead, dim(u) = ', dim(object$u), 
+           '; dim(y) = ', dim(object$y))
     }
     if (na.check == TRUE &&
         (any(sapply(components[3:10], function(x) 
