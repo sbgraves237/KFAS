@@ -1,4 +1,4 @@
-#' Test whether object is a valid \code{SSModel} object.
+#' Test whether object is a valid \code{SSModel} object
 #'
 #' Function \code{is.SSModel} tests whether the object is a valid \code{SSModel}
 #' object.
